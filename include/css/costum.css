@@ -1,0 +1,6 @@
+
+
+.navcl{background: <?php echo '#'. $this->db->get('cstyle')->row()->navcolor; ?>}
+
+
+

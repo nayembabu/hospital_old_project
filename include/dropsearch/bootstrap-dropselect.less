@@ -1,0 +1,163 @@
+/**
+ * bootstrap-dropselect.less
+ *
+ * @author Jovanni Lo @lodev09
+ * @copyright 2014 Jovanni Lo
+ */
+
+// variables.less from bootstrap
+@import "variables.less";
+
+@ds-icon-width: 			23px;
+@ds-item-padding:			8px;
+@ds-header-padding: 		8px 10px;
+@ds-css-prefix:				dropselect;
+
+.@{ds-css-prefix} {
+	width: 300px;
+	padding: 0;
+	border-collapse: separate;
+	margin-bottom: 20px;
+
+	&-loading {
+		&-overlay {
+			display:none;
+		    text-indent:100%;
+		    height:100%;
+		    width:100%;
+		    position:absolute;
+		    top:0;
+		    z-index:5;
+		    border-radius:5px;
+		    border:1px solid transparent;
+		    background-color:rgba(255,255,255,0.8);
+		    animation:dropselect-pulse 2s infinite linear;
+		    -webkit-animation:dropselect-pulse 2s infinite linear;
+		    -moz-animation:dropselect-pulse 2s infinite linear;
+		}
+
+		&-icon {
+			position:absolute;
+		    left:50%;
+		    top:50%;
+		    margin:-16px 0 0 -16px;
+		    width:32px;
+		    font-size: 32px;
+		    line-height:1;
+		    display:inline-block;
+		    text-decoration:none;
+		    -webkit-font-smoothing:antialiased;
+		    text-indent:0;
+		}
+	}
+
+	&&-loading {
+		.@{ds-css-prefix}-loading-overlay { display: block; }
+	}
+
+	> .dropdown-header {
+		background: @well-bg;
+		padding: @ds-header-padding;
+		font-size: inherit;
+		color: @gray-dark;
+		text-shadow: 0 1px 0 #fff;
+		border-bottom: 1px solid rgba(200,200,200,0.4)
+	}
+
+	> .@{ds-css-prefix}-list {
+		height: auto;
+	    max-height: 400px;
+	    overflow-x: hidden;
+		min-width: 160px;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		font-size: @font-size-base;
+		text-align: left;
+
+		> .@{ds-css-prefix}-item .@{ds-css-prefix}-item-icon { visibility: hidden; }
+		> .@{ds-css-prefix}-item.@{ds-css-prefix}-selected .@{ds-css-prefix}-item-icon { visibility: visible; }
+
+		> li:nth-last-child(2) { border-bottom: 0; }
+
+		> .@{ds-css-prefix}-no-results {
+			padding: 10px;
+			color: @gray-light;
+			display: none;
+			border-bottom: 0;
+		}
+
+		&.filter-empty .@{ds-css-prefix}-no-results,
+		> .@{ds-css-prefix}-no-results:only-child {
+			display: block;
+		}
+	}
+
+	> li, > .@{ds-css-prefix}-list > li {
+		border-bottom: 1px solid @gray-lighter;
+
+		> a {
+			padding: @ds-item-padding;
+			display: table;
+			table-layout: fixed;
+			width: 100%;
+			overflow: hidden;
+
+			// from bootstrap
+			clear: both;
+		    font-weight: normal;
+		    line-height: @line-height-base;
+		    color: @dropdown-link-color;
+		    white-space: normal; // make sure that we wrap the content of each item
+
+			&:hover,
+			&:focus {
+				text-decoration: none;
+				color: @dropdown-link-hover-color;
+				background-color: @dropdown-link-hover-bg;
+
+				& .@{ds-css-prefix}-item-icon {
+					color: @dropdown-link-hover-color
+				}
+			}
+		}
+	}
+
+	.divider {
+		height: 5px;
+		margin: 0;
+		background-color: @navbar-default-bg;
+	}
+
+	&-item-icon {
+		width: @ds-icon-width;
+		display: table-cell;
+		color: @gray-dark;
+	}
+
+	> .@{ds-css-prefix}-filter {
+		background-color: @navbar-default-bg;
+		padding: 10px;
+		border-bottom: 1px solid @table-border-color;
+	}
+
+	> .@{ds-css-prefix}-filter .@{ds-css-prefix}-filter-input {
+		display: block;
+		width: 100%;
+		max-width: 100%;
+		float: none;
+	}
+}
+
+
+@-webkit-keyframes dropselect-pulse {
+    0% {color:rgba(170,170,170,0.1)}
+    10% {color:#aaaaaa}
+    100% {color:rgba(170,170,170,0.1)}
+}
+
+@keyframes dropselect-pulse {
+    0% {color:rgba(170,170,170,0.1)}
+    10% {color:#aaaaaa}
+    100% {color:rgba(170,170,170,0.1)}
+}
