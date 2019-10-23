@@ -27,7 +27,7 @@ class Bed extends CI_Controller {
     public function index(){        
         $data['beds'] = $this->bed_model->getbed();
         $loginId = $this->ion_auth->user()->row()->emp_id;
-        $data['user_P'] = $this->settings_model->get_log_user($loginId);         
+        $data['user_P'] = $this->settings_model->get_log_user($loginId); 
         $this->load->view('home/dashboard', $data); // just the header file
         $this->load->view('bed/bed', $data);
         $this->load->view('home/footer'); // just the header file
@@ -39,28 +39,53 @@ class Bed extends CI_Controller {
         $floor = $this->input->post('floor');
         $des = $this->input->post('description');
         $price = $this->input->post('price');
+        $bed_cat_i = $this->input->post('bed_cat_i');
         $data = array(
-            'category' => $cat,
-            'b_num' => $bedno,
-            'floor' => $floor,
-            'description' => $des,
-            'price' => $price 
+            'category'      => $cat,
+            'b_num'         => $bedno,
+            'floor'         => $floor,
+            'description'   => $des,
+            'price'         => $price, 
+            'bed_cat_i'     => $bed_cat_i
         );
 
         $this->bed_model->insertbed($data);
         redirect('bed');
     }
 
+    function editBedByJason() {
+        $id = $this->input->get('id');
+        $data['bed_info'] = $this->bed_model->getBedByid($id);
+        echo json_encode($data);
+    }
 
+    function updatebed() {  
 
+        $bed_id     = $this->input->post('id');
 
+        $cat        = $this->input->post('cat_name');
+        $bedno      = $this->input->post('bedno');
+        $floor      = $this->input->post('floor');
+        $des        = $this->input->post('description');
+        $price      = $this->input->post('price');
+        $bed_cat_i  = $this->input->post('bed_cat_i');
+        $data = array(
+            'category'      => $cat,
+            'b_num'         => $bedno,
+            'floor'         => $floor,
+            'description'   => $des,
+            'price'         => $price, 
+            'bed_cat_i'     => $bed_cat_i
+        );
 
+        $this->bed_model->updatebed($bed_id, $data);
+        redirect('bed');
+    }
 
-
-
-
-
-
-
+    function delete() {
+        $id = $this->input->get('id');
+        $this->bed_model->delete_bed($id);
+        redirect('bed');
+    }
 
 }

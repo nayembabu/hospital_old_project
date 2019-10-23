@@ -21,18 +21,18 @@ class Department_model extends CI_model {
     }
 
     function getDepartmentById($id) {
-        $this->db->where('id', $id);
+        $this->db->where('dept_id', $id);
         $query = $this->db->get('department');
         return $query->row();
     }
 
     function updateDepartment($id, $data) {
-        $this->db->where('id', $id);
+        $this->db->where('dept_id', $id);
         $this->db->update('department', $data);
     }
 
     function delete($id) {
-        $this->db->where('id', $id);
+        $this->db->where('dept_id', $id);
         $this->db->delete('department');
     }
 

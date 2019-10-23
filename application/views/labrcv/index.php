@@ -27,7 +27,7 @@
 
               <div style="width: 250px; float: right; position: relative;" class="form-group">
                 <label>Patient ID</label>
-                <input type="text" class="form-control" id="search_P_id" class="search_P_id" onkeyup="findID();" placeholder="Search by Patient ID">
+                <input type="text" class="fosrm-control" id="search_P_id" class="search_P_id" onkeyup="findID();" placeholder="Search by Patient ID">
               </div>
 
 
@@ -115,7 +115,7 @@
                 var n;
                 var blank_text = '<div class="s_name_list">Please Type Patient ID</div>';
                 for (n = 0; n < response.length; n++) {
-                    html += '<div class="s_name_list" id="'+response[n].lab_rgstr_iidd+'" onclick="open_win(this.id, this.title)">'+response[n].labpnname+'</div>';
+                    html += '<div class="s_name_list" id="'+response[n].lab_rgstr_iidd+'" onclick="open_win(this.id)">'+response[n].labpnname+'</div>';
                 }
 
                 if (serch_type != '') {

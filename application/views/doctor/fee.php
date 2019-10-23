@@ -42,8 +42,14 @@
                                 <td> <?php echo $doctorfees->hospital_first; ?></td>
                                 <td> <?php echo $doctorfees->hospital_sec; ?></td>
                                 <td class="no-print">
-                                    <button type="button" class="btn btn-info btn-xs btn_width editbutton" title="<?php echo lang('edit'); ?>" data-toggle="modal" data-id="<?php echo $doctor->id; ?>"><i class="fa fa-edit"> </i> <?php echo lang('edit'); ?></button>   
-                                    <a class="btn btn-info btn-xs btn_width delete_button" title="<?php echo lang('delete'); ?>" href="doctor/delete?id=<?php echo $doctor->id; ?>" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-trash"> </i> <?php echo lang('delete'); ?></a>
+
+
+
+                                    <button type="button" class="btn btn-info btn-xs btn_width editbutton" title="<?php echo lang('edit'); ?>" data-toggle="modal" data-id="<?php echo $doctorfees->dr_fee_id; ?>"><i class="fa fa-edit"> </i> <?php echo lang('edit'); ?></button>   
+                                    <a class="btn btn-info btn-xs btn_width delete_button" title="<?php echo lang('delete'); ?>" href="doctor/deletedr_fee?id=<?php echo $doctorfees->dr_fee_id; ?>" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-trash"> </i> </a>
+
+
+
                                 </td>
                             </tr>
                         <?php } ?>
@@ -74,6 +80,7 @@
             </div>
             <div class="modal-body">
                 <form role="form" action="doctor/addfee" method="post" enctype="multipart/form-data">
+
                     <div class="form-group">
                         <label for="exampleInputEmail1"><?php echo lang('doctor'); ?></label>
                         <select class="form-control m-bot15 js-example-basic-single" name="dr_id" value=''>
@@ -91,7 +98,7 @@
 
                     <div class="form-group">
                         <label for="exampleInputEmail1"><?php echo lang('second_ticket'); ?></label>
-                        <input type="text" class="form-control" name="dr_sectime" id="exampleInputEmail1" value='' placeholder="">
+                        <input type="text" required="required" class="form-control" name="dr_sectime" id="exampleInputEmail1" value='' placeholder="">
                     </div>
 
                     <div class="form-group">
@@ -128,10 +135,11 @@
                 <h4 class="modal-title"><i class="fa fa-edit"></i> <?php echo lang('edit_doctor'); ?></h4>
             </div>
             <div class="modal-body">
-                <form role="form" action="doctor/addfee" method="post" enctype="multipart/form-data">
+                <form role="form" action="doctor/update_fee" id="doctorupdateform" method="post" enctype="multipart/form-data">
+                    
                     <div class="form-group">
                         <label for="exampleInputEmail1"><?php echo lang('doctor'); ?></label>
-                        <select class="form-control m-bot15 js-example-basic-single" name="dr_id" value=''>
+                        <select class="form-control " id="dr_fee_id" name="dr_id" value=''>
                         <?php foreach ($doctors as $doctor) { ?>
                             <option value="<?php echo $doctor->dr_id; ?>"><?php echo $doctor->dr_id; ?> --------- <?php echo $doctor->drname; ?> </option>
                         <?php } ?>
@@ -146,7 +154,7 @@
 
                     <div class="form-group">
                         <label for="exampleInputEmail1"><?php echo lang('second_ticket'); ?></label>
-                        <input type="text" class="form-control" name="dr_sectime" id="exampleInputEmail1" value='' placeholder="">
+                        <input type="text" required="required" class="form-control" name="dr_sectime" id="exampleInputEmail1" value='' placeholder="">
                     </div>
 
                     <div class="form-group">
@@ -158,6 +166,8 @@
                         <label for="exampleInputEmail1"><?php echo lang('hospital_charge'); ?> <?php echo lang('second_ticket'); ?></label>
                         <input required="required" type="text" class="form-control" name="hospital_sec" id="exampleInputEmail1" value='' placeholder="">
                     </div>
+            
+            <input type="hidden" name="dr_fee_id" value="">
                     <br><br><br><br><br>
                     <button type="submit" name="submit" class="btn btn-info"><?php echo lang('submit'); ?></button>
                 </form>
@@ -168,35 +178,32 @@
 </div>
 <!-- Edit Event Modal-->
 
-<script src="common/js/codelnp.min.js"></script>
 <script type="text/javascript">
-                                        $(document).ready(function () {
-                                            $(".editbutton").click(function (e) {
-                                                e.preventDefault(e);
-                                                // Get the record's ID via attribute  
-                                                var iid = $(this).attr('data-id');
-                                                $('#editDoctorForm').trigger("reset");
-                                                $('#myModal2').modal('show');
-                                                $.ajax({
-                                                    url: 'doctor/editDoctorByJason?id=' + iid,
-                                                    method: 'GET',
-                                                    data: '',
-                                                    dataType: 'json',
-                                                }).success(function (response) {
-                                                    // Populate the form fields with the data returned from server
-                                                    $('#editDoctorForm').find('[name="id"]').val(response.doctor.id).end()
-                                                    $('#editDoctorForm').find('[name="name"]').val(response.doctor.drname).end()
-                                                    $('#editDoctorForm').find('[name="password"]').val(response.doctor.password).end()
-                                                    $('#editDoctorForm').find('[name="email"]').val(response.doctor.email).end()
-                                                    $('#editDoctorForm').find('[name="address"]').val(response.doctor.address).end()
-                                                    $('#editDoctorForm').find('[name="phone"]').val(response.doctor.phone).end()
-                                                    $('#editDoctorForm').find('[name="department"]').val(response.doctor.department).end()
-                                                    $('#editDoctorForm').find('[name="profile"]').val(response.doctor.profile).end()
+$(document).ready(function () {
+    $(".editbutton").click(function (e) {
+        e.preventDefault(e);
+        // Get the record's ID via attribute  
+        var iid = $(this).attr('data-id');
+        $('#editDoctorForm').trigger("reset");
+        $('#myModal2').modal('show');
 
-                                                    $('.js-example-basic-single.department').val(response.doctor.department).trigger('change');
-                                                });
-                                            });
-                                        });
+        $.ajax({
+            url: 'doctor/editDoctorFeeByJason?id=' + iid,
+            method: 'GET',
+            data: '',
+            dataType: 'json',
+        }).success(function (response) {
+            // Populate the form fields with the data returned from server
+            $('#doctorupdateform').find('[name="dr_fee_id"]').val(response.dr_fee.dr_fee_id).end()
+            $('#doctorupdateform').find('[name="dr_firsttime"]').val(response.dr_fee.dr_firsttime).end()
+            $('#doctorupdateform').find('[name="dr_sectime"]').val(response.dr_fee.dr_sectime).end()
+            $('#doctorupdateform').find('[name="hospital_first"]').val(response.dr_fee.hospital_first).end()
+            $('#doctorupdateform').find('[name="hospital_sec"]').val(response.dr_fee.hospital_sec).end()
+
+            $('#dr_fee_id option[value='+response.dr_fee.dr_id+']').attr('selected', 'selected'); 
+        });
+    });
+});
 </script>
 <script>
     $(document).ready(function () {

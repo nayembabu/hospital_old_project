@@ -406,7 +406,7 @@ $config['encryption_key'] = 'nayem_babu';
 */
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
-$config['sess_expiration'] = 7220000;
+$config['sess_expiration'] = 722200000;
 $config['sess_expire_on_close']	= TRUE;
 $config['sess_encrypt_cookie']	= FALSE;
 $config['sess_save_path'] = NULL;

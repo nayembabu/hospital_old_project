@@ -20,30 +20,20 @@ class Bed_model extends CI_model {
         $this->db->insert('bed', $data);
     }
 
-
-
-
-
-/**
-    function insert($data) {
-        $this->db->insert('table', $data);
+    function getBedByid($id) {
+        $this->db->where('bed_Idi', $id);
+        $sql = $this->db->get('bed');
+        return $sql->row();
     }
 
-    function get() {
-        $query = $this->db->get('table');
-        return $query->result();
+    function updatebed($bed_id, $data) {
+        $this->db->where('bed_Idi', $bed_id);
+        $this->db->update('bed');
     }
 
-    function update($id, $data) {
-        $this->db->where('id', $id);
-        $this->db->update('table', $data);
+    function delete_bed($id) {
+        $this->db->where('bed_Idi', $id);
+        $this->db->delete('bed');
     }
-
-    function delete($id) {
-        $this->db->where('id', $id);
-        $this->db->delete('table');
-    }
-**/
-
 
 }

@@ -23,48 +23,21 @@ class Patient extends CI_Controller {
             redirect('auth/login', 'refresh');
         }
         if (!$this->ion_auth->in_group(array('admin', 'Nurse', 'Accountant', 'Doctor', 'Supervisor'))) {
-            redirect('home/permission');
+            redirect('home');
         }
     }
 
     public function index() {
+        $loginId = $this->ion_auth->user()->row()->emp_id;
+
         $data['doctors'] = $this->doctor_model->getDoctor();
-        $data['groups'] = $this->donor_model->getBloodBank();
         $data['patients'] = $this->patient_model->getPatient();
-        $data['appoints'] = $this->patient_model->getAppoint();
         $data['settings'] = $this->settings_model->getSettings();
         $data['beds'] = $this->patient_model->getbed();
-        $loginId = $this->ion_auth->user()->row()->emp_id;
         $data['user_P'] = $this->settings_model->get_log_user($loginId); 
 
         $this->load->view('home/dashboard', $data); // just the header file
         $this->load->view('patient/patient', $data);
-        $this->load->view('home/footer'); // just the header file
-    }
-
-    public function calendar() {
-        $data['settings'] = $this->settings_model->getSettings();
-
-        $loginId = $this->ion_auth->user()->row()->emp_id;
-        $data['user_P'] = $this->settings_model->get_log_user($loginId); 
-
-        $this->load->view('home/dashboard', $data); // just the header file
-        
-        $this->load->view('patient/calendar', $data);
-        $this->load->view('home/footer'); // just the header file
-    }
-
-    public function addNewView() {
-        $data = array();
-        $data['doctors'] = $this->doctor_model->getDoctor();
-        $data['groups'] = $this->donor_model->getBloodBank();
-        
-        $loginId = $this->ion_auth->user()->row()->emp_id;
-        $data['user_P'] = $this->settings_model->get_log_user($loginId); 
-
-        $this->load->view('home/dashboard', $data); // just the header file
-        
-        $this->load->view('patient/add_new', $data);
         $this->load->view('home/footer'); // just the header file
     }
 
@@ -73,8 +46,7 @@ class Patient extends CI_Controller {
         $loginId = $this->ion_auth->user()->row()->emp_id;
         $data['user_P'] = $this->settings_model->get_log_user($loginId); 
 
-        $this->load->view('home/dashboard', $data); // just the header file
-        
+        $this->load->view('home/dashboard', $data); // just the header file   
         $this->load->view('patient/simple_view');
         $this->load->view('home/footer'); // just the header file
     }
@@ -128,11 +100,6 @@ class Patient extends CI_Controller {
    
     }
 
-
-
-
-
-
     public function addpatient() {
         $this_tim = time();
         $date_time = $this->input->post('date').' '.$this->input->post('time');
@@ -148,6 +115,7 @@ class Patient extends CI_Controller {
         $address = $this->input->post('address');
         $mobile = $this->input->post('mobile');
         $sex = $this->input->post('sex');
+        $rel_actv = $this->input->post('actv');
         $b_num = $this->input->post('b_num');
         $add_date = date('Y-m-d', strtotime($tmp_date));
         $age = $this->input->post('age');
@@ -155,29 +123,36 @@ class Patient extends CI_Controller {
         $rand2 = rand(10, 1000);
         $rand3 = rand(10, 100000);
         $patient_id = $rand1 + $rand2 + $rand3;
-                    /**        if (empty($patient_id)) {
-                                $patient_id = rand(10000, 1000000); }
-                            if ((empty($id))) { $add_date = date('m/d/y'); } else {
-                                $add_date = $this->db->get_where('patient', array('id' => $id))->row()->add_date; }
-                    **/
+        $id_ptns = $this->patient_model->get_ptn_number();
+        $increment_ids = $id_ptns->p_n_id+1;
+
         $data = array(
-                    'ptnname'       => $name,
-                    'f_s_name'      => $f_name,
-                    'dr_id'         => $dr_id,
-                    'app_id'        => $app_id,
-                    'pn_address'    => $address,
-                    'mobile'        => $mobile,
-                    'sex'           => $sex,
-                    'age'           => $age,
-                    'reg_no'        => $reg_no,
-                    'time_this'     => $this_time,
-                    'Patient_cause' => $ptn_cuss,
-                    'patient_id'    => $patient_id,
-                    'emp_id'        => $emp_id,
-                    'b_num'         => $b_num,
-                    'add_date'      => $add_date
+                'ptnname'       => $name,
+                'f_s_name'      => $f_name,
+                'dr_id'         => $dr_id,
+                'pn_address'    => $address,
+                'mobile'        => $mobile,
+                'sex'           => $sex,
+                'age'           => $age,
+                'reg_no'        => $reg_no,
+                'time_this'     => $this_time,
+                'Patient_cause' => $ptn_cuss,
+                'patient_id'    => $patient_id,
+                'emp_id'        => $emp_id,
+                'b_num'         => $b_num,
+                'add_date'      => $add_date,
+                'rel_with_ptn'  => $rel_actv
             );
         $this->patient_model->insertPatient($data);
+
+        $bed_allocate = array(
+            'patient_id'    => $patient_id,
+            'admit_time'    => $this_time,
+            'bed_cat_i'     => $b_num,
+            'bed_no'        => $b_num,
+            'ptn_iid'       => $increment_ids
+            );
+        $this->patient_model->insert_b_a($bed_allocate);
         $this->session->set_flashdata('feedback', 'Paitient Admitted');
             // Loading View
                 redirect('patient');
@@ -187,6 +162,9 @@ class Patient extends CI_Controller {
 
 
     public function editPatientData() {
+        $date_time = $this->input->post('date').' '.$this->input->post('time');
+        $this_time = strtotime($date_time);
+
         $name = $this->input->post('name');
         $f_name = $this->input->post('father');
         $dr_id = $this->input->post('doctor_p');
@@ -194,27 +172,45 @@ class Patient extends CI_Controller {
         $address = $this->input->post('address');
         $mobile = $this->input->post('phone');
         $sex = $this->input->post('sex');
-        $b_num = $this->input->post('b_num');
         $age = $this->input->post('age');
         $id = $this->input->post('id');
+        $data = array();
+        if ($this->ion_auth->in_group(array('admin'))) {
         $data = array(
                     'ptnname'       => $name,
                     'f_s_name'      => $f_name,
                     'dr_id'         => $dr_id,
-                    'pn_address'       => $address,
+                    'pn_address'    => $address,
                     'mobile'        => $mobile,
                     'sex'           => $sex,
                     'age'           => $age,
                     'reg_no'        => $reg_no,
-                    'b_num'         => $b_num
+                    'time_this'     => $this_time
             );
+        }else{
+            $data = array(
+                        'ptnname'       => $name,
+                        'f_s_name'      => $f_name,
+                        'dr_id'         => $dr_id,
+                        'pn_address'    => $address,
+                        'mobile'        => $mobile,
+                        'sex'           => $sex,
+                        'age'           => $age,
+                        'reg_no'        => $reg_no,
+                        'time_this'     => $this_time
+                );
+        }
         $this->patient_model->updatePatientData($id, $data);
         $this->session->set_flashdata('feedback', 'Updated');
             // Loading View
                 redirect('patient');
         }
 
-
+        function search_patientByID() {
+            $p_id = $this->input->get('id');
+            $data = $this->patient_model->get_patient_forSearch($p_id);
+            echo json_encode($data);
+        }
 
 
 
@@ -256,6 +252,38 @@ class Patient extends CI_Controller {
         echo json_encode($data);
     }
 
+    function editBed_data() {
+        $p_ids = $this->input->post('p_id_for_bed'); 
+        $p_bed_s = $this->input->post('b_num');
+        $last_patient = $this->patient_model->get_p_by_ids($p_ids);
+        $now_bed_no = $last_patient->b_num;
+        $p_rand_id = $last_patient->patient_id;
+        $this_time = time();
+        $query_last_bed = $this->patient_model->get_previous_bed($p_ids, $now_bed_no);
+        $last_bed_id = $query_last_bed->b_a_id;
+        $now_time = time();
+
+        $bed_update_data = array(
+            'discharge_time' => $now_time, 
+        );
+        $this->patient_model->updateNowBed($last_bed_id, $bed_update_data);
+        $c_data = array(
+            'b_num' => $p_bed_s, 
+        );
+        $this->patient_model->update_P_Beds($p_ids, $c_data);
+
+        $bed_allocate = array(
+            'patient_id'    => $p_rand_id,
+            'admit_time'    => $this_time,
+            'bed_cat_i'     => $p_bed_s,
+            'bed_no'        => $p_bed_s,
+            'ptn_iid'       => $p_ids
+            );
+        $this->patient_model->insert_b_a($bed_allocate);
+        $this->session->set_flashdata('feedback', 'Bed Updated');
+            // Loading View
+        redirect('patient');
+    }
 
    function patientDetails() {
         $data = array();
@@ -582,15 +610,6 @@ class Patient extends CI_Controller {
     function delete() {
         $data = array();
         $id = $this->input->get('id');
-        $user_data = $this->db->get_where('patient', array('id' => $id))->row();
-        $path = $user_data->img_url;
-
-        if (!empty($path)) {
-            unlink($path);
-        }
-        $ion_user_id = $user_data->ion_user_id;
-        $this->db->where('id', $ion_user_id);
-        $this->db->delete('users');
         $this->patient_model->delete($id);
         $this->session->set_flashdata('feedback', 'Deleted');
         redirect('patient');

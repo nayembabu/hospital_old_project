@@ -537,7 +537,7 @@
                                 </a>
                                 <ul class="sub">
                                     <li><a href="doctor"><i class="fa fa-user"></i><?php echo lang('list_of_doctors'); ?></a></li>
-                                    <li><a href="appointment/treatmentReport"><i class="fa fa-money"></i><?php echo lang('treatment_history'); ?></a></li>
+                                    
                                     <li><a href="doctor/drfee"><i class="fa fa-money"></i><?php echo lang('dr_fee'); ?></a></li>
                                 </ul>
                             </li>

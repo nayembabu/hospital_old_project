@@ -23,6 +23,7 @@
                     <table class="table table-striped table-hover table-bordered" id="editable-sample">
                         <thead>
                             <tr>
+                                <th> <?php echo lang('id')?> </th>
                                 <th> <?php echo lang('name')?></th>
                                 <th> <?php echo lang('description')?></th>
                                 <th class="no-print"> <?php echo lang('options')?></th>
@@ -31,11 +32,12 @@
                         <tbody>
                             <?php foreach ($departments as $department) { ?>
                                 <tr class="">
-                                    <td><?php echo $department->name; ?></td>
+                                    <td><?php echo $department->dept_id; ?></td>
+                                    <td><?php echo $department->dept_name; ?></td>
                                     <td><?php echo $department->description; ?></td>
                                     <td class="no-print">
-                                      <button type="button" class="btn btn-info btn-xs btn_width editbutton" data-toggle="modal" title="<?php echo lang('edit'); ?>" data-id="<?php echo $department->id; ?>"><i class="fa fa-edit"></i> </button>   
-                                    <a class="btn btn-info btn-xs btn_width delete_button" title="<?php echo lang('delete'); ?>" href="department/delete?id=<?php echo $department->id; ?>" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-trash"></i> </a>
+                                      <button type="button" class="btn btn-info btn-xs btn_width editbutton" data-toggle="modal" title="<?php echo lang('edit'); ?>" data-id="<?php echo $department->dept_id; ?>"><i class="fa fa-edit"></i> </button>   
+                                    <a class="btn btn-info btn-xs btn_width delete_button" title="<?php echo lang('delete'); ?>" href="department/delete?id=<?php echo $department->dept_id; ?>" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-trash"></i> </a>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -93,7 +95,7 @@
                 <h4 class="modal-title"><i class="fa fa-edit"></i>  <?php echo lang('edit_department')?></h4>
             </div>
             <div class="modal-body">
-                <form role="form" id="departmentEditForm" action="department/addNew" method="post" enctype="multipart/form-data">
+                <form role="form" id="departmentEditForm" action="department/updatedepartment_info" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="exampleInputEmail1"> <?php echo lang('name')?></label>
                         <input type="text" class="form-control" name="name" id="exampleInputEmail1" value='' placeholder="">
@@ -130,8 +132,8 @@ $(document).ready(function () {
             async: false,
             success: function (response) {
             // Populate the form fields with the data returned from server
-            $('#departmentEditForm').find('[name="id"]').val(response.department.id).end()
-            $('#departmentEditForm').find('[name="name"]').val(response.department.name).end()
+            $('#departmentEditForm').find('[name="id"]').val(response.department.dept_id).end()
+            $('#departmentEditForm').find('[name="name"]').val(response.department.dept_name).end()
             CKEDITOR.instances['editor'].setData(response.department.description)
             }
         });
